@@ -1,0 +1,85 @@
+# Alert rules for Node Exporter
+groups:
+  - name: node-exporter-alerts
+    rules:
+      # High CPU usage
+      - alert: HighCpuUsage
+        expr: 100 - (avg(rate(node_cpu_seconds_total{mode="idle"}[5m])) * 100) > 80
+        for: 5m
+        labels:
+          severity: warning
+        annotations:
+          summary: "High CPU usage detected"
+          description: "CPU usage is above 80% for more than 5 minutes. Current value: {{ $value }}%"
+
+      # High Memory usage
+      - alert: HighMemoryUsage
+        expr: (1 - (node_memory_MemAvailable_bytes / node_memory_MemTotal_bytes)) * 100 > 90
+        for: 5m
+        labels:
+          severity: critical
+        annotations:
+          summary: "High memory usage detected"
+          description: "Memory usage is above 90% for more than 5 minutes. Current value: {{ $value }}%"
+
+      # Low Disk space
+      - alert: LowDiskSpace
+        expr: 100 - ((node_filesystem_avail_bytes * 100) / node_filesystem_size_bytes) > 90
+        for: 5m
+        labels:
+          severity: warning
+        annotations:
+          summary: "Low disk space detected"
+          description: "Disk usage is above 90% for more than 5 minutes. Current value: {{ $value }}%"
+
+      # High Load Average
+      - alert: HighLoadAverage
+        expr: node_load1 > 2
+        for: 5m
+        labels:
+          severity: warning
+        annotations:
+          summary: "High load average detected"
+          description: "Load average is above 2 for more than 5 minutes. Current value: {{ $value }}"
+
+      # Instance down
+      - alert: InstanceDown
+        expr: up == 0
+        for: 5m
+        labels:
+          severity: critical
+        annotations:
+          summary: "Instance {{ $labels.instance }} down"
+          description: "{{ $labels.instance }} of job {{ $labels.job }} has been down for more than 5 minutes."
+
+  - name: docker-alerts
+    rules:
+      # Container down
+      - alert: ContainerDown
+        expr: absent(container_last_seen) or (time() - container_last_seen) > 60
+        for: 5m
+        labels:
+          severity: warning
+        annotations:
+          summary: "Container {{ $labels.name }} is down"
+          description: "Container {{ $labels.name }} has been down for more than 5 minutes."
+
+      # High container CPU usage
+      - alert: HighContainerCpuUsage
+        expr: rate(container_cpu_usage_seconds_total[5m]) * 100 > 80
+        for: 5m
+        labels:
+          severity: warning
+        annotations:
+          summary: "High CPU usage in container {{ $labels.name }}"
+          description: "Container {{ $labels.name }} CPU usage is above 80%. Current value: {{ $value }}%"
+
+      # High container Memory usage  
+      - alert: HighContainerMemoryUsage
+        expr: (container_memory_usage_bytes / container_spec_memory_limit_bytes) * 100 > 90
+        for: 5m
+        labels:
+          severity: critical
+        annotations:
+          summary: "High memory usage in container {{ $labels.name }}"
+          description: "Container {{ $labels.name }} memory usage is above 90%. Current value: {{ $value }}%"

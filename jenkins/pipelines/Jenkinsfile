@@ -1,0 +1,109 @@
+pipeline {
+    agent any
+    
+    environment {
+        DOCKER_IMAGE = "myapp"
+        DOCKER_TAG = "${env.BUILD_ID}"
+        REGISTRY = "your-registry.com"
+    }
+    
+    stages {
+        stage('Checkout') {
+            steps {
+                echo 'Checking out source code...'
+                git branch: 'main', url: 'https://github.com/your-username/your-repo.git'
+            }
+        }
+        
+        stage('Build') {
+            steps {
+                echo 'Building application...'
+                script {
+                    // Build Docker image
+                    def image = docker.build("${DOCKER_IMAGE}:${DOCKER_TAG}")
+                    
+                    // Tag for registry
+                    image.tag("${DOCKER_IMAGE}:latest")
+                }
+            }
+        }
+        
+        stage('Test') {
+            steps {
+                echo 'Running tests...'
+                script {
+                    docker.image("${DOCKER_IMAGE}:${DOCKER_TAG}").inside {
+                        // Run tests inside container
+                        sh '''
+                            echo "Running unit tests..."
+                            # npm test
+                            # python -m pytest
+                            # go test
+                        '''
+                    }
+                }
+            }
+        }
+        
+        stage('Security Scan') {
+            steps {
+                echo 'Running security scan...'
+                script {
+                    // Docker image security scan
+                    sh "docker run --rm -v /var/run/docker.sock:/var/run/docker.sock aquasec/trivy:latest ${DOCKER_IMAGE}:${DOCKER_TAG}"
+                }
+            }
+        }
+        
+        stage('Deploy to Staging') {
+            when {
+                branch 'develop'
+            }
+            steps {
+                echo 'Deploying to staging...'
+                script {
+                    // Deploy to staging environment
+                    sh '''
+                        docker stop myapp-staging || true
+                        docker rm myapp-staging || true
+                        docker run -d --name myapp-staging -p 3001:3000 ${DOCKER_IMAGE}:${DOCKER_TAG}
+                    '''
+                }
+            }
+        }
+        
+        stage('Deploy to Production') {
+            when {
+                branch 'main'
+            }
+            steps {
+                echo 'Deploying to production...'
+                input message: 'Deploy to production?', ok: 'Deploy'
+                script {
+                    // Deploy to production environment
+                    sh '''
+                        docker stop myapp-prod || true
+                        docker rm myapp-prod || true
+                        docker run -d --name myapp-prod -p 3000:3000 ${DOCKER_IMAGE}:${DOCKER_TAG}
+                    '''
+                }
+            }
+        }
+    }
+    
+    post {
+        always {
+            echo 'Cleaning up...'
+            // Clean up dangling images
+            sh 'docker image prune -f'
+        }
+        success {
+            echo 'Pipeline succeeded!'
+            // Send success notification
+        }
+        failure {
+            echo 'Pipeline failed!'
+            // Send failure notification
+        }
+    }
+}

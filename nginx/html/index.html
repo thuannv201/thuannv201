@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Welcome to Nginx</title>
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            margin: 0;
+            padding: 40px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .container {
+            text-align: center;
+            max-width: 600px;
+            background: rgba(255, 255, 255, 0.1);
+            padding: 40px;
+            border-radius: 20px;
+            backdrop-filter: blur(10px);
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+        }
+        h1 {
+            font-size: 3em;
+            margin-bottom: 20px;
+            font-weight: 300;
+        }
+        .nginx-logo {
+            font-size: 4em;
+            margin-bottom: 20px;
+        }
+        p {
+            font-size: 1.2em;
+            line-height: 1.6;
+            margin-bottom: 30px;
+        }
+        .status {
+            background: rgba(76, 175, 80, 0.2);
+            padding: 15px;
+            border-radius: 10px;
+            border-left: 4px solid #4CAF50;
+            margin: 20px 0;
+        }
+        .info {
+            background: rgba(255, 255, 255, 0.1);
+            padding: 20px;
+            border-radius: 10px;
+            margin: 20px 0;
+            text-align: left;
+        }
+        .info h3 {
+            margin-top: 0;
+            color: #FFD700;
+        }
+        code {
+            background: rgba(0, 0, 0, 0.3);
+            padding: 3px 8px;
+            border-radius: 4px;
+            font-family: 'Courier New', monospace;
+        }
+        .footer {
+            margin-top: 40px;
+            font-size: 0.9em;
+            opacity: 0.8;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="nginx-logo">🌐</div>
+        <h1>Welcome to Nginx!</h1>
+        
+        <div class="status">
+            <strong>✅ Nginx is running successfully!</strong>
+        </div>
+        
+        <p>
+            Congratulations! Your Nginx web server is up and running. 
+            This is the default page for your Docker Nginx setup.
+        </p>
+        
+        <div class="info">
+            <h3>📁 Cấu hình hiện tại:</h3>
+            <ul>
+                <li><strong>Web Root:</strong> <code>/usr/share/nginx/html</code></li>
+                <li><strong>Config:</strong> <code>/etc/nginx/nginx.conf</code></li>
+                <li><strong>Virtual Hosts:</strong> <code>/etc/nginx/conf.d/</code></li>
+                <li><strong>Logs:</strong> <code>/var/log/nginx/</code></li>
+            </ul>
+        </div>
+        
+        <div class="info">
+            <h3>🔗 Useful Links:</h3>
+            <ul>
+                <li><a href="/health" style="color: #FFD700;">Health Check</a></li>
+                <li><a href="http://nginx.org/en/docs/" target="_blank" style="color: #FFD700;">Nginx Documentation</a></li>
+            </ul>
+        </div>
+        
+        <div class="footer">
+            <p>
+                🐳 Powered by Docker | 🌐 Nginx Alpine<br>
+                Modify <code>/html/index.html</code> to customize this page
+            </p>
+        </div>
+    </div>
+</body>
+</html>
