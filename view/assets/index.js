@@ -269,65 +269,45 @@ const LanguageManager = {
     },
     
     createLanguageToggle() {
-        // Create container for control buttons in header
-        let controlsContainer = document.querySelector('.controls-container');
-        if (!controlsContainer) {
-            controlsContainer = document.createElement('div');
-            controlsContainer.className = 'controls-container';
-            controlsContainer.style.cssText = `
-                position: fixed;
-                top: 20px;
-                right: 20px;
-                display: flex;
-                gap: 15px;
-                z-index: 1001;
-            `;
-            document.body.appendChild(controlsContainer);
-        }
-
-        const langToggle = document.createElement('button');
-        langToggle.className = 'language-toggle';
-        langToggle.innerHTML = this.currentLanguage === 'vi' ? '🇺🇸' : '🇻🇳';
-        langToggle.setAttribute('aria-label', 'Toggle language');
-        langToggle.title = this.currentLanguage === 'vi' ? 'Switch to English' : 'Chuyển sang Tiếng Việt';
+        const langToggle = document.getElementById('languageToggle');
+        const langToggleMobile = document.getElementById('languageToggleMobile');
         
-        // Styles for language toggle
-        langToggle.style.cssText = `
-            width: 50px;
-            height: 50px;
-            background: var(--color-surface);
-            border: 2px solid var(--color-primary);
-            border-radius: 50%;
-            cursor: pointer;
-            font-size: 1.5rem;
-            box-shadow: 0 4px 15px rgba(99, 102, 241, 0.3);
-            transition: all 0.3s ease;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        `;
+        const updateButton = (button) => {
+            if (!button) return;
+            button.innerHTML = this.currentLanguage === 'vi' ? '🇺🇸' : '🇻🇳';
+            button.title = this.currentLanguage === 'vi' ? 'Switch to English' : 'Chuyển sang Tiếng Việt';
+        };
         
-        langToggle.addEventListener('click', () => {
+        // Update both buttons
+        updateButton(langToggle);
+        updateButton(langToggleMobile);
+        
+        // Add event listeners
+        const handleToggle = () => {
             this.toggleLanguage();
-        });
+        };
         
-        langToggle.addEventListener('mouseenter', () => {
-            langToggle.style.transform = 'scale(1.1)';
-        });
+        if (langToggle) {
+            langToggle.addEventListener('click', handleToggle);
+            this.langToggleButton = langToggle;
+        }
         
-        langToggle.addEventListener('mouseleave', () => {
-            langToggle.style.transform = 'scale(1)';
-        });
-        
-        controlsContainer.appendChild(langToggle);
-        this.langToggleButton = langToggle;
+        if (langToggleMobile) {
+            langToggleMobile.addEventListener('click', handleToggle);
+            this.langToggleButtonMobile = langToggleMobile;
+        }
     },
     
     updateLanguageToggle() {
-        if (this.langToggleButton) {
-            this.langToggleButton.innerHTML = this.currentLanguage === 'vi' ? '🇺🇸' : '🇻🇳';
-            this.langToggleButton.title = this.currentLanguage === 'vi' ? 'Switch to English' : 'Chuyển sang Tiếng Việt';
-        }
+        const updateButton = (button) => {
+            if (button) {
+                button.innerHTML = this.currentLanguage === 'vi' ? '🇺🇸' : '🇻🇳';
+                button.title = this.currentLanguage === 'vi' ? 'Switch to English' : 'Chuyển sang Tiếng Việt';
+            }
+        };
+        
+        updateButton(this.langToggleButton);
+        updateButton(this.langToggleButtonMobile);
     }
 };
 
@@ -381,53 +361,43 @@ const ThemeManager = {
     },
     
     createThemeToggle() {
-        // Use existing controls container or create one
-        let controlsContainer = document.querySelector('.controls-container');
-        if (!controlsContainer) {
-            controlsContainer = document.createElement('div');
-            controlsContainer.className = 'controls-container';
-            controlsContainer.style.cssText = `
-                position: fixed;
-                top: 20px;
-                right: 20px;
-                display: flex;
-                gap: 15px;
-                z-index: 1001;
-            `;
-            document.body.appendChild(controlsContainer);
-        }
-
-        const themeToggle = document.createElement('button');
-        themeToggle.className = 'theme-toggle';
-        themeToggle.innerHTML = '<i class="fas fa-moon"></i>';
-        themeToggle.setAttribute('aria-label', 'Toggle theme');
+        const themeToggle = document.getElementById('themeToggle');
+        const themeToggleMobile = document.getElementById('themeToggleMobile');
         
-        // Styles for theme toggle
-        themeToggle.style.cssText = `
-            width: 50px;
-            height: 50px;
-            background: var(--color-primary, #6366f1);
-            color: white;
-            border: none;
-            border-radius: 50%;
-            cursor: pointer;
-            font-size: 1.2rem;
-            box-shadow: 0 4px 15px rgba(99, 102, 241, 0.3);
-            transition: all 0.3s ease;
-        `;
-        
-        themeToggle.addEventListener('click', () => {
+        const handleToggle = () => {
             this.toggleTheme();
-            const icon = themeToggle.querySelector('i');
-            icon.className = this.currentTheme === 'dark' ? 'fas fa-sun' : 'fas fa-moon';
-        });
+            const updateIcon = (button) => {
+                if (button) {
+                    const icon = button.querySelector('i');
+                    if (icon) {
+                        icon.className = this.currentTheme === 'dark' ? 'fas fa-sun' : 'fas fa-moon';
+                    }
+                }
+            };
+            updateIcon(themeToggle);
+            updateIcon(themeToggleMobile);
+        };
         
-        controlsContainer.appendChild(themeToggle);
-        
-        // Update icon based on current theme
-        if (this.currentTheme === 'dark') {
-            themeToggle.querySelector('i').className = 'fas fa-sun';
+        if (themeToggle) {
+            themeToggle.addEventListener('click', handleToggle);
         }
+        
+        if (themeToggleMobile) {
+            themeToggleMobile.addEventListener('click', handleToggle);
+        }
+        
+        // Update icons based on current theme
+        const updateInitialIcon = (button) => {
+            if (button && this.currentTheme === 'dark') {
+                const icon = button.querySelector('i');
+                if (icon) {
+                    icon.className = 'fas fa-sun';
+                }
+            }
+        };
+        
+        updateInitialIcon(themeToggle);
+        updateInitialIcon(themeToggleMobile);
     }
 };
 

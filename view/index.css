@@ -109,6 +109,56 @@ body.dark-theme .navbar {
     width: 100%;
 }
 
+/* Navigation Controls */
+.nav-controls {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.control-btn {
+    width: 40px;
+    height: 40px;
+    border: 2px solid var(--color-primary);
+    background: var(--color-surface);
+    border-radius: 50%;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.3s ease;
+    font-size: 1.2rem;
+}
+
+.control-btn:hover {
+    transform: scale(1.1);
+    box-shadow: 0 4px 15px rgba(99, 102, 241, 0.3);
+}
+
+.theme-toggle {
+    background: var(--color-primary);
+    color: white;
+    border: none;
+}
+
+.theme-toggle:hover {
+    background: var(--color-secondary);
+}
+
+/* Mobile controls in menu */
+.nav-controls-mobile {
+    display: none;
+}
+
+.mobile-controls {
+    display: flex;
+    justify-content: center;
+    gap: 1rem;
+    padding: 1rem 0;
+    border-top: 1px solid var(--color-primary, #6366f1);
+    margin-top: 1rem;
+}
+
 .hamburger {
     display: none;
     flex-direction: column;
@@ -642,8 +692,23 @@ section {
 
 /* Responsive Design */
 @media (max-width: 768px) {
+    .nav-container {
+        justify-content: space-between;
+    }
+    
+    /* Hide desktop controls on mobile */
+    .nav-controls {
+        display: none;
+    }
+    
+    /* Show mobile controls in menu */
+    .nav-controls-mobile {
+        display: block !important;
+    }
+    
     .hamburger {
         display: flex;
+        order: 3;
     }
     
     .nav-menu {
