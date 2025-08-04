@@ -1,0 +1,37 @@
+version: '3.8'
+
+services:
+  nginx:
+    image: nginx:alpine
+    container_name: nginx_server
+    restart: unless-stopped
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - ./config/nginx.conf:/etc/nginx/nginx.conf:ro
+      - ./config/conf.d:/etc/nginx/conf.d:ro
+      - ./html:/usr/share/nginx/html:ro
+      - ./ssl:/etc/nginx/ssl:ro
+      - nginx_logs:/var/log/nginx
+    networks:
+      - nginx_network
+
+  # Backend service mẫu (có thể bỏ comment để test reverse proxy)
+  # backend:
+  #   image: nginx:alpine
+  #   container_name: backend_app
+  #   restart: unless-stopped
+  #   volumes:
+  #     - ./backend:/usr/share/nginx/html:ro
+  #   networks:
+  #     - nginx_network
+  #   expose:
+  #     - "80"
+
+volumes:
+  nginx_logs:
+
+networks:
+  nginx_network:
+    driver: bridge
